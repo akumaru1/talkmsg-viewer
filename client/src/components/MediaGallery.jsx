@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react';
-import { formatMonthYear, getMonthKey, formatDate, formatTime } from '../utils/parseTime.js';
+import { formatMonthYear, getMonthKey, formatDate, formatTime, formatDateYYYYMMDD } from '../utils/parseTime.js';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { replaceName } from '../utils/textUtils.js';
 import Lightbox from './Lightbox.jsx';
@@ -359,12 +359,12 @@ function GalleryTile({ msg, onOpen }) {
       {type === 'voice' && (
         <div className="tile-voice-tile">
           <span className="voice-tile-icon">🎙️</span>
-          <div className="voice-tile-time">{formatTime(timestamp)}</div>
+          <div className="voice-tile-time">{formatDateYYYYMMDD(timestamp)}</div>
           {caption && <div className="voice-tile-caption">{caption.slice(0, 30)}</div>}
         </div>
       )}
 
-      <div className="tile-timestamp">{formatTime(timestamp)}</div>
+      <div className="tile-timestamp">{formatDateYYYYMMDD(timestamp)}</div>
     </div>
   );
 }
