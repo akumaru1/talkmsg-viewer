@@ -27,14 +27,6 @@ export function formatDate(ts) {
   });
 }
 
-export function formatDateYYYYMMDD(ts) {
-  const d = parseTimestamp(ts);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}/${month}/${day}`;
-}
-
 export function formatMonthYear(yyyymm) {
   // yyyymm = "202603"
   const year  = parseInt(yyyymm.slice(0, 4), 10);
