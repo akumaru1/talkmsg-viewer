@@ -146,18 +146,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 15px;
   color: var(--text-muted);
-  opacity: 0;
   padding: 0;
-  transition: opacity 0.15s, color 0.15s;
+  transition: color 0.15s;
   line-height: 1;
   margin-left: auto;
-}
-
-.bubble-row:hover .msg-fav-btn,
-.bubble-row:focus-within .msg-fav-btn {
-  opacity: 1;
 }
 
 .msg-fav-btn.active {

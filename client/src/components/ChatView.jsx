@@ -196,7 +196,7 @@ export default function ChatView({
           <div className="chat-header-group">{member.group}</div>
         </div>
         {totalMessages > 0 && (
-          <div className="chat-count">{totalMessages} Messages</div>
+          <div className="chat-count">{totalMessages}<br />Messages</div>
         )}
         <button className="icon-btn pink" onClick={() => setCalOpen(true)} aria-label="Calendar">📅</button>
         <button className="icon-btn pink" onClick={onGallery} aria-label="Gallery">🖼️</button>
