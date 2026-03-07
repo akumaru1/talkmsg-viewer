@@ -1,0 +1,11 @@
+{
+  "name": "mobame",
+  "version": "1.0.0",
+  "description": "Nogizaka46 Mobame viewer – monorepo root",
+  "private": true,
+  "scripts": {
+    "server": "node server/index.js",
+    "client": "cd client && node node_modules/.bin/vite --host",
+    "dev":    "npm run server & npm run client"
+  }
+}

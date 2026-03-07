@@ -1,0 +1,248 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.gallery-header { gap: 8px; }
+
+.gallery-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.gallery-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── Filter bar ── */
+.gallery-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.filter-chip {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.filter-chip.active {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #fff;
+}
+
+.cal-chip {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Gallery scroll area ── */
+.gallery-scroll {
+  background: var(--bg);
+}
+
+/* ── Infinite scroll sentinel + loading indicators ── */
+.top-sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+.older-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.older-loading .spinner {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.no-more-messages {
+  text-align: center;
+  padding: 14px 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ── Month section ── */
+.gallery-month-section {
+  margin-bottom: 2px;
+}
+
+.gallery-month-header {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ── Grid ── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 2px;
+}
+
+/* ── Tile ── */
+.gallery-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.tile-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+.tile-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  background: #2a2a3a;
+  color: #aaa;
+}
+
+/* Overlay shown on tile (play icon etc.) */
+.tile-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.gallery-tile:hover .tile-overlay {
+  background: rgba(0,0,0,0.3);
+}
+.gallery-tile:hover .tile-overlay .tile-icon {
+  opacity: 1;
+}
+.tile-icon {
+  font-size: 22px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+  text-shadow: 0 0 4px rgba(0,0,0,0.6);
+  pointer-events: none;
+}
+
+/* For video tiles, show play button always */
+.gallery-tile:has(.tile-hidden-video) .tile-icon {
+  opacity: 0.8;
+  font-size: 28px;
+}
+
+.tile-hidden-video { display: none; }
+
+/* Video badge */
+.tile-video-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+}
+
+/* Timestamp badge */
+.tile-timestamp {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+  pointer-events: none;
+}
+
+/* Voice tile */
+.tile-voice-tile {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f3e5f5, #e8eaf6);
+  gap: 4px;
+  padding: 8px;
+}
+.voice-tile-icon { font-size: 28px; }
+.voice-tile-time { font-size: 11px; color: var(--text-muted); }
+.voice-tile-caption {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.tile-error { opacity: 0.4; }
+
+.gallery-empty {
+  padding: 60px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+

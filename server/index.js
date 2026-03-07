@@ -1,0 +1,193 @@
+const express = require('express');
+const cors    = require('cors');
+const path    = require('path');
+const fs      = require('fs');
+
+const app = express();
+const PORT = 3001;
+
+// ─── Paths ────────────────────────────────────────────────────────────────────
+const DATA_DIR  = path.join(__dirname, '..', 'data');
+const MEDIA_DIR = '/home/akumaru/Downloads/colmsg';
+
+// ─── Middleware ───────────────────────────────────────────────────────────────
+app.use(cors());
+app.use(express.json());
+
+// Prevent browsers from caching API responses
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
+// Serve built React app in production
+const DIST = path.join(__dirname, '..', 'client', 'dist');
+if (fs.existsSync(DIST)) {
+  app.use(express.static(DIST));
+}
+
+// ─── Media files ─────────────────────────────────────────────────────────────
+// e.g. GET /media/乃木坂46/田村真佑/xxxxxx.jpg
+app.use('/media', (req, res, next) => {
+  // Decode the URI so Japanese folder names work correctly
+  const decodedPath = decodeURIComponent(req.path);
+  const absolutePath = path.join(MEDIA_DIR, decodedPath);
+
+  // Block path traversal attempts
+  if (!absolutePath.startsWith(MEDIA_DIR)) {
+    return res.status(403).send('Forbidden');
+  }
+
+  res.sendFile(absolutePath, (err) => {
+    if (err) next(err);
+  });
+});
+
+// ─── API: member index ────────────────────────────────────────────────────────
+app.get('/api/members', (req, res) => {
+  const filePath = path.join(DATA_DIR, 'members.json');
+  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Not found' });
+  res.sendFile(filePath);
+});
+
+// ─── API: individual member messages (paginated) ─────────────────────────────
+// GET /api/messages/:dataFile?offset=0&limit=100
+//
+// The JSON file on disk is sorted newest-first (index 0 = most recent).
+// We serve pages from that order so the client can start at the newest messages
+// and load older ones on demand.
+//
+// Response: { messages: [...], total: N, offset: N, hasMore: bool }
+//   messages are returned in CHRONOLOGICAL order (oldest-first) within the
+//   requested slice, so the client can simply prepend each batch to the top.
+app.get('/api/messages/:dataFile', (req, res) => {
+  const dataFile     = decodeURIComponent(req.params.dataFile);
+  const absolutePath = path.join(DATA_DIR, dataFile);
+
+  // Block path traversal
+  if (!absolutePath.startsWith(DATA_DIR)) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  if (!fs.existsSync(absolutePath)) {
+    return res.status(404).json({ error: 'File not found', dataFile });
+  }
+
+  try {
+    const all    = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+    const total  = all.length;
+    const offset = Math.max(0, parseInt(req.query.offset ?? '0', 10));
+    const limit  = Math.min(200, Math.max(1, parseInt(req.query.limit ?? '100', 10)));
+
+    // Slice from the newest-first array, then reverse to get chronological order
+    const slice  = all.slice(offset, offset + limit).reverse();
+
+    res.json({
+      messages: slice,
+      total,
+      offset,
+      limit,
+      hasMore: offset + limit < total,
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Parse error' });
+  }
+});
+
+// ─── API: available months for a member ───────────────────────────────────────
+app.get('/api/months/:dataFile', (req, res) => {
+  const dataFile    = decodeURIComponent(req.params.dataFile);
+  const absolutePath = path.join(DATA_DIR, dataFile);
+
+  if (!absolutePath.startsWith(DATA_DIR) || !fs.existsSync(absolutePath)) {
+    return res.status(404).json({ error: 'File not found' });
+  }
+
+  try {
+    const messages = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+    const monthSet = new Set();
+
+    for (const msg of messages) {
+      const ts = msg.timestamp || '';
+      if (ts.length >= 6) {
+        monthSet.add(ts.slice(0, 6)); // YYYYMM
+      }
+    }
+
+    // Return sorted descending (newest first)
+    const months = Array.from(monthSet).sort((a, b) => b.localeCompare(a));
+    res.json(months);
+  } catch (e) {
+    res.status(500).json({ error: 'Parse error' });
+  }
+});
+
+// ─── API: find load offset for a given month ──────────────────────────────────
+// GET /api/offset/:dataFile?month=YYYYMM
+//
+// Returns the offset (index in the newest-first array) to pass to /api/messages
+// so that the OLDEST message of the target month lands at the start of the
+// returned (chronological) slice — i.e. the month appears at the top of the view.
+app.get('/api/offset/:dataFile', (req, res) => {
+  const dataFile     = decodeURIComponent(req.params.dataFile);
+  const absolutePath = path.join(DATA_DIR, dataFile);
+  const month        = req.query.month; // YYYYMM
+
+  if (!absolutePath.startsWith(DATA_DIR) || !fs.existsSync(absolutePath)) {
+    return res.status(404).json({ error: 'File not found' });
+  }
+  if (!month || !/^\d{6}$/.test(month)) {
+    return res.status(400).json({ error: 'month param required (YYYYMM)' });
+  }
+
+  try {
+    const messages = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+    const limit    = Math.min(200, Math.max(1, parseInt(req.query.limit ?? '100', 10)));
+
+    // In the newest-first array, find the contiguous block for this month.
+    // firstIdx = newest message of the month (smallest index)
+    // lastIdx  = oldest message of the month (largest index)
+    let firstIdx = -1;
+    let lastIdx  = -1;
+    for (let i = 0; i < messages.length; i++) {
+      const ts = messages[i].timestamp || '';
+      if (ts.startsWith(month)) {
+        if (firstIdx === -1) firstIdx = i;
+        lastIdx = i;
+      } else if (firstIdx !== -1) {
+        break; // past the month block — no need to scan further
+      }
+    }
+
+    if (firstIdx === -1) {
+      return res.json({ offset: 0 }); // month not found, fall back to top
+    }
+
+    // We want `lastIdx` (the oldest message of the month) to be the LAST element
+    // of our slice so that after reversing it becomes the FIRST chronologically.
+    // offset = lastIdx - limit + 1  (clamped to 0)
+    const offset = Math.max(0, lastIdx - limit + 1);
+    res.json({ offset });
+  } catch (e) {
+    res.status(500).json({ error: 'Parse error' });
+  }
+});
+
+// ─── SPA fallback (production) ────────────────────────────────────────────────
+if (fs.existsSync(DIST)) {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(DIST, 'index.html'));
+  });
+}
+
+// ─── Error handler ────────────────────────────────────────────────────────────
+app.use((err, req, res, _next) => {
+  console.error(err.message);
+  res.status(err.status || 500).send(err.message || 'Server error');
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n  Mobame server running at http://0.0.0.0:${PORT}\n`);
+  console.log(`  Data dir : ${DATA_DIR}`);
+  console.log(`  Media dir: ${MEDIA_DIR}\n`);
+});

@@ -1,0 +1,123 @@
+.chat-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #f0f0f5;
+}
+
+/* Header */
+.chat-header {
+  gap: 8px;
+}
+
+.chat-header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.chat-header-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.chat-header-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-header-group {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Scroll */
+.chat-scroll {
+  padding: 8px 0 16px;
+}
+
+/* Date separator */
+.date-separator {
+  display: flex;
+  align-items: center;
+  margin: 16px 16px 8px;
+  gap: 8px;
+}
+.date-separator::before,
+.date-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.date-separator span {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: 2px 8px;
+  background: #e8e8ef;
+  border-radius: 10px;
+}
+
+/* Month anchor (invisible, for scroll targets) */
+.month-anchor {
+  height: 0;
+  visibility: hidden;
+}
+
+.chat-empty {
+  padding: 60px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* message count badge in header */
+.chat-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Invisible sentinel div at top of scroll */
+.top-sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+/* 'Loading older…' bar */
+.older-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.older-loading .spinner {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+/* 'Beginning of messages' banner */
+.no-more-messages {
+  text-align: center;
+  padding: 14px 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}

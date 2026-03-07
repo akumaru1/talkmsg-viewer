@@ -1,0 +1,134 @@
+.bubble-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 12px 4px 12px;
+}
+
+/* Small avatar beside each bubble */
+.bubble-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  margin-top: 2px;
+  overflow: hidden;
+}
+
+.bubble-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: calc(100% - 46px);
+}
+
+/* ── Base bubble ── */
+.bubble {
+  background: var(--bubble-bg);
+  border-radius: 4px 16px 16px 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ── Text bubble ── */
+.bubble-text {
+  padding: 10px 14px;
+}
+
+.bubble-text-content {
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+  text-align: left;
+}
+
+/* ── Media bubble ── */
+.bubble-media {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+}
+
+.bubble-media-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bubble-bg);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.bubble-img {
+  display: block;
+  max-width: 100%;
+  max-height: 340px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.bubble-media-video {
+  cursor: default;
+  overflow: visible;
+}
+
+.bubble-video {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  border-radius: 4px 16px 0 0;
+  background: var(--bubble-bg);
+}
+
+/* Caption below image/video */
+.bubble-caption {
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: left;
+  width: 100%;
+}
+
+/* ── Voice bubble ── */
+.bubble-voice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  min-width: 220px;
+}
+
+.voice-icon {
+  font-size: 18px;
+}
+
+.voice-audio {
+  width: 100%;
+  height: 32px;
+}
+
+/* ── Timestamp ── */
+.bubble-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  padding-left: 4px;
+}
