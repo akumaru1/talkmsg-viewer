@@ -22,6 +22,9 @@ export default function App() {
   const [hasNewer,        setHasNewer]        = useState(false);
   const [totalMessages,   setTotalMessages]   = useState(0);
 
+  // Chat message favorites for the currently selected member
+  const [chatFavorites,   setChatFavorites]   = useState([]); // array of message objects
+
   // Track current offset (how many messages from the top of the file we've fetched)
   const offsetRef = useRef(0);
   // Tracks the smallest file-array index we've loaded (0 = all-newest loaded, >0 = newer msgs exist)
@@ -79,6 +82,11 @@ export default function App() {
       setHasMore(data.hasMore);
       setHasNewer(false);              // initial load starts from newest end
       setTotalMessages(data.total);
+      // Load chat favorites for this member
+      fetch(`/api/chat-favorites/${encodeURIComponent(member.data_file)}`)
+        .then(r => r.json())
+        .then(favs => setChatFavorites(Array.isArray(favs) ? favs : []))
+        .catch(() => setChatFavorites([]));
       // Push a history entry so the Android back button returns to hub
       history.pushState({ view: 'chat' }, '');
     } catch (err) {
@@ -167,6 +175,30 @@ export default function App() {
     }
   }, [selectedMember, fetchPage]);
 
+  // ── Toggle a chat message favorite ────────────────────────────────────────
+  const toggleChatFavorite = useCallback(async (message) => {
+    if (!selectedMember) return;
+    const isFav  = chatFavorites.some(f => f.id === message.id);
+    const action = isFav ? 'remove' : 'add';
+    // Optimistic update
+    setChatFavorites(prev =>
+      action === 'add'
+        ? [...prev.filter(f => f.id !== message.id), message]
+        : prev.filter(f => f.id !== message.id)
+    );
+    try {
+      const res  = await fetch(`/api/chat-favorites/${encodeURIComponent(selectedMember.data_file)}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ id: message.id, action }),
+      });
+      const data = await res.json();
+      if (data.favorites) setChatFavorites(data.favorites);
+    } catch (err) {
+      console.error('Failed to update chat favorite:', err);
+    }
+  }, [selectedMember, chatFavorites]);
+
   // ── Navigation helpers ───────────────────────────────────────────────────
   const goHub     = () => { history.replaceState({ view: 'hub' }, '');  setView('hub'); };
   const goChat    = () => { history.replaceState({ view: 'chat' }, ''); setView('chat'); };
@@ -200,6 +232,8 @@ export default function App() {
               onJumpToMonth={jumpToMonth}
               onBack={goHub}
               onGallery={goGallery}
+              chatFavorites={chatFavorites}
+              onToggleChatFavorite={toggleChatFavorite}
             />
           )}
           {view === 'gallery' && (

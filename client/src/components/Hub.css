@@ -271,3 +271,36 @@
   color: var(--text-muted);
   font-size: 14px;
 }
+
+/* ── Favorites section label ───────────────────────────────────────────────── */
+.hub-status-label.favorites { color: #f5a623; }
+
+/* ── Favorite star button ──────────────────────────────────────────────────── */
+.fav-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: #ccc;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.15s, transform 0.12s;
+  flex-shrink: 0;
+}
+
+.fav-star.active   { color: #f5a623; }
+.fav-star:hover    { color: #f5a623; transform: scale(1.25); }
+.fav-star:active   { transform: scale(0.95); }
+
+/* Card star — shown below the member name */
+.card-star {
+  font-size: 15px;
+  margin-top: -2px;
+}
+
+/* Row star — sits between info and chevron */
+.row-star {
+  font-size: 19px;
+  padding: 6px 6px;
+}

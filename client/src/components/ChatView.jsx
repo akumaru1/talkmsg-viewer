@@ -9,6 +9,7 @@ export default function ChatView({
   member, messages, loading,
   loadingOlder, loadingNewer, hasMore, hasNewer, totalMessages,
   onLoadOlder, onLoadNewer, onJumpToMonth, onBack, onGallery,
+  chatFavorites = [], onToggleChatFavorite,
 }) {
   const bottomRef         = useRef(null);
   const bottomSentinelRef = useRef(null);
@@ -19,8 +20,17 @@ export default function ChatView({
   const jumpTargetRef  = useRef(null);
 
   const [calOpen,      setCalOpen]    = useState(false);
+  const [favOpen,      setFavOpen]    = useState(false);
   // Months fetched from the dedicated API endpoint (covers ALL messages)
   const [allMonths,    setAllMonths]  = useState([]);
+
+  // Set of favorited message IDs for O(1) lookup
+  const favMessageIds = useMemo(() => new Set(chatFavorites.map(f => f.id)), [chatFavorites]);
+  // Favorites sorted by timestamp ascending
+  const sortedFavorites = useMemo(() =>
+    [...chatFavorites].sort((a, b) => (a.timestamp || '').localeCompare(b.timestamp || '')),
+    [chatFavorites]
+  );
 
   const color     = isAnnouncement(member) ? '#607d8b' : memberColor(member.name);
   const initial   = isAnnouncement(member) ? '📢' : avatarChar(member.name);
@@ -153,6 +163,14 @@ export default function ChatView({
         )}
         <button className="icon-btn pink" onClick={() => setCalOpen(true)} aria-label="Calendar">📅</button>
         <button className="icon-btn pink" onClick={onGallery} aria-label="Gallery">🖼️</button>
+        <button
+          className={`icon-btn pink${favOpen ? ' active-fav' : ''}`}
+          onClick={() => setFavOpen(o => !o)}
+          aria-label="Favorites"
+          title={`Favorites (${chatFavorites.length})`}
+        >
+          {chatFavorites.length > 0 ? '★' : '☆'}
+        </button>
       </header>
 
       {/* ── Messages ── */}
@@ -199,6 +217,8 @@ export default function ChatView({
                   memberColor={color}
                   memberInitial={initial}
                   avatarUrl={avatarUrl}
+                  isFavorite={favMessageIds.has(item.msg.id)}
+                  onToggleFavorite={onToggleChatFavorite}
                 />
               );
             })}
@@ -227,6 +247,33 @@ export default function ChatView({
           onJump={handleJump}
           onClose={() => setCalOpen(false)}
         />
+      )}
+
+      {/* ── Favorites Panel ── */}
+      {favOpen && (
+        <div className="fav-panel">
+          <div className="fav-panel-header">
+            <span className="fav-panel-title">★ Favorites ({chatFavorites.length})</span>
+            <button className="icon-btn" onClick={() => setFavOpen(false)} aria-label="Close">✕</button>
+          </div>
+          <div className="fav-panel-body scroll-area">
+            {sortedFavorites.length === 0 ? (
+              <div className="chat-empty">お気に入りのメッセージはありません</div>
+            ) : (
+              sortedFavorites.map(msg => (
+                <MessageBubble
+                  key={msg.id}
+                  message={msg}
+                  memberColor={color}
+                  memberInitial={initial}
+                  avatarUrl={avatarUrl}
+                  isFavorite
+                  onToggleFavorite={onToggleChatFavorite}
+                />
+              ))
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

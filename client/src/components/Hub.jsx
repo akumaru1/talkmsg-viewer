@@ -188,7 +188,7 @@ function MemberCard({ member, online, onSelect }) {
     : null;
 
   return (
-    <button
+    <div
       className={`member-card ${online ? 'online' : 'offline'}`}
       onClick={() => onSelect(member)}
     >
@@ -203,11 +203,11 @@ function MemberCard({ member, online, onSelect }) {
         }
       </div>
       <div className="member-card-name">{member.name}</div>
-    </button>
+    </div>
   );
 }
 
-// ── List row (announcement section – unchanged) ──────────────────────────────
+// ── List row (announcement section) ──────────────────────────────────────────
 function MemberRow({ member, onSelect, announce = false }) {
   const color   = announce ? '#607d8b' : memberColor(member.name);
   const initial = announce ? '📢' : avatarChar(member.name);
@@ -219,7 +219,7 @@ function MemberRow({ member, onSelect, announce = false }) {
     : '(メッセージなし)';
 
   return (
-    <button className="member-row" onClick={() => onSelect(member)}>
+    <div className="member-row" onClick={() => onSelect(member)}>
       <div
         className="member-avatar"
         style={avatarUrl ? {} : { background: color }}
@@ -235,6 +235,6 @@ function MemberRow({ member, onSelect, announce = false }) {
         <div className="member-preview">{preview}</div>
       </div>
       <div className="member-chevron">›</div>
-    </button>
+    </div>
   );
 }

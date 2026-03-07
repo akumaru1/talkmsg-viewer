@@ -216,6 +216,82 @@ app.get('/api/sync/status', (req, res) => {
   });
 });
 
+// ─── API: favorites ───────────────────────────────────────────────────────────
+const FAVORITES_FILE = path.join(DATA_DIR, 'favorites.json');
+
+function readFavorites() {
+  if (!fs.existsSync(FAVORITES_FILE)) return [];
+  try { return JSON.parse(fs.readFileSync(FAVORITES_FILE, 'utf8')); } catch { return []; }
+}
+
+function writeFavorites(ids) {
+  fs.writeFileSync(FAVORITES_FILE, JSON.stringify(ids, null, 2), 'utf8');
+}
+
+// GET /api/favorites  — returns array of favorited data_file IDs
+app.get('/api/favorites', (req, res) => {
+  res.json(readFavorites());
+});
+
+// POST /api/favorites  — body: { id: 'filename.json', action: 'add' | 'remove' }
+app.post('/api/favorites', (req, res) => {
+  const { id, action } = req.body;
+  if (!id || !['add', 'remove'].includes(action)) {
+    return res.status(400).json({ error: "Expected { id, action: 'add'|'remove' }" });
+  }
+  let ids = readFavorites();
+  if (action === 'add')    ids = [...new Set([...ids, id])];
+  if (action === 'remove') ids = ids.filter(f => f !== id);
+  writeFavorites(ids);
+  res.json({ favorites: ids });
+});
+
+// ─── API: chat message favorites (per-member) ────────────────────────────────
+const CHAT_FAVORITES_FILE = path.join(DATA_DIR, 'chat_favorites.json');
+
+function readChatFavorites() {
+  if (!fs.existsSync(CHAT_FAVORITES_FILE)) return {};
+  try { return JSON.parse(fs.readFileSync(CHAT_FAVORITES_FILE, 'utf8')); } catch { return {}; }
+}
+
+function writeChatFavorites(data) {
+  fs.writeFileSync(CHAT_FAVORITES_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+
+// Helper: resolve an array of IDs → full message objects from the member data file
+function resolveFavMessages(dataFileName, ids) {
+  if (!ids.length) return [];
+  const dataFilePath = path.join(DATA_DIR, dataFileName);
+  let messages = [];
+  try { messages = JSON.parse(fs.readFileSync(dataFilePath, 'utf8')); } catch { return []; }
+  const idSet = new Set(ids);
+  const byId  = Object.fromEntries(messages.filter(m => idSet.has(m.id)).map(m => [m.id, m]));
+  return ids.map(id => byId[id]).filter(Boolean);
+}
+
+// GET /api/chat-favorites/:dataFile  — returns array of favorited message objects
+app.get('/api/chat-favorites/:dataFile', (req, res) => {
+  const all = readChatFavorites();
+  const ids = all[req.params.dataFile] || [];
+  res.json(resolveFavMessages(req.params.dataFile, ids));
+});
+
+// POST /api/chat-favorites/:dataFile  — body: { id: 'msgId', action: 'add'|'remove' }
+app.post('/api/chat-favorites/:dataFile', (req, res) => {
+  const { id, action } = req.body;
+  if (!id || !['add', 'remove'].includes(action)) {
+    return res.status(400).json({ error: "Expected { id: 'msgId', action: 'add'|'remove' }" });
+  }
+  const all = readChatFavorites();
+  const key = req.params.dataFile;
+  let ids   = all[key] || [];
+  if (action === 'add')    ids = [...ids.filter(i => i !== id), id];
+  if (action === 'remove') ids = ids.filter(i => i !== id);
+  all[key] = ids;
+  writeChatFavorites(all);
+  res.json({ favorites: resolveFavMessages(key, ids) });
+});
+
 // ─── SPA fallback (production) ────────────────────────────────────────────────
 if (fs.existsSync(DIST)) {
   app.get('*', (req, res) => {

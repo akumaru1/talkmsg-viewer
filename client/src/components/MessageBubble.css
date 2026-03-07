@@ -132,3 +132,33 @@
   margin-top: 3px;
   padding-left: 4px;
 }
+
+/* ── Favorite star button ── */
+.msg-fav-btn {
+  align-self: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-muted);
+  opacity: 0;
+  padding: 4px 6px;
+  transition: opacity 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.bubble-row:hover .msg-fav-btn,
+.bubble-row:focus-within .msg-fav-btn {
+  opacity: 1;
+}
+
+.msg-fav-btn.active {
+  color: #f5a623;
+  opacity: 1;
+}
+
+.msg-fav-btn:hover {
+  color: #f5a623;
+  opacity: 1;
+}

@@ -4,7 +4,7 @@ import { replaceName } from '../utils/textUtils.js';
 import Lightbox from './Lightbox.jsx';
 import './MessageBubble.css';
 
-export default function MessageBubble({ message, memberColor, memberInitial, avatarUrl }) {
+export default function MessageBubble({ message, memberColor, memberInitial, avatarUrl, isFavorite, onToggleFavorite }) {
   const { text, image, media, type, timestamp } = message;
   const [lightbox, setLightbox] = useState(false);
 
@@ -74,6 +74,17 @@ export default function MessageBubble({ message, memberColor, memberInitial, ava
         {/* Timestamp */}
         <div className="bubble-time">{timeStr}</div>
       </div>
+
+      {/* Favorite star */}
+      {onToggleFavorite && (
+        <button
+          className={`msg-fav-btn${isFavorite ? ' active' : ''}`}
+          onClick={() => onToggleFavorite(message)}
+          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          {isFavorite ? '★' : '☆'}
+        </button>
+      )}
 
       {/* Lightbox for image preview */}
       {lightbox && imageUrl && (
