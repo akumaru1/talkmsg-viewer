@@ -1,7 +1,8 @@
-const express = require('express');
-const cors    = require('cors');
-const path    = require('path');
-const fs      = require('fs');
+const express  = require('express');
+const cors     = require('cors');
+const path     = require('path');
+const fs       = require('fs');
+const { spawn } = require('child_process');
 
 const app = express();
 const PORT = 3001;
@@ -171,6 +172,48 @@ app.get('/api/offset/:dataFile', (req, res) => {
   } catch (e) {
     res.status(500).json({ error: 'Parse error' });
   }
+});
+
+// ─── Sync scripts ─────────────────────────────────────────────────────────────
+const ROOT_DIR = path.join(__dirname, '..');
+
+const SCRIPTS = {
+  generate_data:  path.join(ROOT_DIR, 'generate_data.py'),
+  refresh_online: path.join(ROOT_DIR, 'refresh_online.py'),
+};
+
+const syncState = {
+  generate_data:  { running: false, lastStatus: null },
+  refresh_online: { running: false, lastStatus: null },
+};
+
+// POST /api/sync  — body: { script: 'generate_data' | 'refresh_online' }
+app.post('/api/sync', (req, res) => {
+  const { script } = req.body;
+  if (!SCRIPTS[script]) return res.status(400).json({ error: 'Unknown script' });
+  if (syncState[script].running) return res.status(409).json({ error: 'Already running' });
+
+  syncState[script].running    = true;
+  syncState[script].lastStatus = null;
+
+  const proc = spawn('python3', [SCRIPTS[script]], { cwd: ROOT_DIR });
+  proc.stdout.on('data', (d) => process.stdout.write(`[${script}] ${d}`));
+  proc.stderr.on('data', (d) => process.stderr.write(`[${script}] ${d}`));
+  proc.on('close', (code) => {
+    console.log(`[${script}] exited with code ${code}`);
+    syncState[script].running    = false;
+    syncState[script].lastStatus = code === 0 ? 'success' : 'error';
+  });
+
+  res.json({ started: true });
+});
+
+// GET /api/sync/status
+app.get('/api/sync/status', (req, res) => {
+  res.json({
+    generate_data:  syncState.generate_data,
+    refresh_online: syncState.refresh_online,
+  });
 });
 
 // ─── SPA fallback (production) ────────────────────────────────────────────────

@@ -14,8 +14,11 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
   const [allMonths, setAllMonths] = useState([]);
   const jumpTargetRef = useRef(null);
 
-  const color   = isAnnouncement(member) ? '#607d8b' : memberColor(member.name);
-  const initial = isAnnouncement(member) ? '📢' : avatarChar(member.name);
+  const color     = isAnnouncement(member) ? '#607d8b' : memberColor(member.name);
+  const initial   = isAnnouncement(member) ? '📢' : avatarChar(member.name);
+  const avatarUrl = (!isAnnouncement(member) && member.avatar)
+    ? `/media/${encodeURIComponent(member.avatar).replace(/%2F/g, '/')}?v=${member.avatar_mtime ?? 0}`
+    : null;
 
   // All media messages (image / video / voice)
   const mediaMessages = useMemo(
@@ -156,7 +159,12 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
       {/* ── Header ── */}
       <header className="app-header gallery-header">
         <button className="icon-btn" onClick={onBack} aria-label="Back to chat">←</button>
-        <div className="gallery-avatar" style={{ background: color }}>{initial}</div>
+        <div className="gallery-avatar" style={avatarUrl ? {} : { background: color }}>
+          {avatarUrl
+            ? <img src={avatarUrl} alt={member.name} className="member-avatar-img" />
+            : initial
+          }
+        </div>
         <div className="gallery-title">
           <div className="gallery-name">{member.name} のメディア</div>
         </div>

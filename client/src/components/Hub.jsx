@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { replaceName } from '../utils/textUtils.js';
 import './Hub.css';
@@ -20,12 +21,107 @@ export default function Hub({ members, loading, onSelectMember }) {
   const online  = regular.filter(m => ONLINE_MEMBERS.has(m.name));
   const offline = regular.filter(m => !ONLINE_MEMBERS.has(m.name));
 
+  // ── Settings dropdown + sync state ─────────────────────────────────────────
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [syncStatus, setSyncStatus] = useState({
+    generate_data:  { running: false, lastStatus: null },
+    refresh_online: { running: false, lastStatus: null },
+  });
+  const menuRef = useRef(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
+
+  // Fetch real status on mount so indicator resumes after navigating away
+  useEffect(() => {
+    (async () => {
+      try {
+        const res  = await fetch('/api/sync/status');
+        const data = await res.json();
+        setSyncStatus(data);
+      } catch {}
+    })();
+  }, []);
+
+  // Poll sync status while something is running
+  useEffect(() => {
+    const anyRunning = Object.values(syncStatus).some(s => s.running);
+    if (!anyRunning) return;
+    const id = setInterval(async () => {
+      try {
+        const res  = await fetch('/api/sync/status');
+        const data = await res.json();
+        setSyncStatus(data);
+      } catch {}
+    }, 1500);
+    return () => clearInterval(id);
+  }, [syncStatus]);
+
+  const triggerSync = async (script) => {
+    try {
+      await fetch('/api/sync', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ script }),
+      });
+      setSyncStatus(prev => ({
+        ...prev,
+        [script]: { running: true, lastStatus: null },
+      }));
+    } catch {}
+    setMenuOpen(false);
+  };
+
+  const SyncIndicator = ({ scriptKey }) => {
+    const s = syncStatus[scriptKey];
+    if (s.running) return <span className="sync-dot running" title="Running…" />;
+    return null;
+  };
+
   return (
     <div className="hub">
       {/* ── Header ── */}
       <header className="hub-header">
         <span className="hub-header-title">Talk</span>
-        <span className="hub-header-icon">⚙️</span>
+        <div className="hub-header-icon-wrap" ref={menuRef}>
+          {Object.values(syncStatus).some(s => s.running) && (
+            <span className="sync-dot running header-sync-dot" title="Sync running…" />
+          )}
+          <span
+            className="hub-header-icon"
+            onClick={() => setMenuOpen(o => !o)}
+            title="Settings"
+          >⚙️</span>
+          {menuOpen && (
+            <div className="settings-menu">
+              <button
+                className="settings-menu-item"
+                onClick={() => triggerSync('generate_data')}
+                disabled={syncStatus.generate_data.running}
+              >
+                Sync All
+                <SyncIndicator scriptKey="generate_data" />
+              </button>
+              <button
+                className="settings-menu-item"
+                onClick={() => triggerSync('refresh_online')}
+                disabled={syncStatus.refresh_online.running}
+              >
+                Sync Online Members
+                <SyncIndicator scriptKey="refresh_online" />
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* ── Scrollable body ── */}

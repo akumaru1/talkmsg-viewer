@@ -38,6 +38,20 @@ export default function App() {
       .finally(() => setMembersLoading(false));
   }, []);
 
+  // ── Android back-button support (History API) ────────────────────────────
+  useEffect(() => {
+    // Seed the base history entry so the hub always has an entry to fall back to
+    history.replaceState({ view: 'hub' }, '');
+
+    const handlePopState = (e) => {
+      const target = e.state?.view ?? 'hub';
+      setView(target);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // ── Fetch one page from the server ───────────────────────────────────────
   const fetchPage = useCallback(async (dataFile, offset) => {
     const url = `/api/messages/${encodeURIComponent(dataFile)}?offset=${offset}&limit=${PAGE_SIZE}`;
@@ -65,6 +79,8 @@ export default function App() {
       setHasMore(data.hasMore);
       setHasNewer(false);              // initial load starts from newest end
       setTotalMessages(data.total);
+      // Push a history entry so the Android back button returns to hub
+      history.pushState({ view: 'chat' }, '');
     } catch (err) {
       console.error('Failed to load messages:', err);
     } finally {
@@ -152,9 +168,9 @@ export default function App() {
   }, [selectedMember, fetchPage]);
 
   // ── Navigation helpers ───────────────────────────────────────────────────
-  const goHub     = () => setView('hub');
-  const goChat    = () => setView('chat');
-  const goGallery = () => setView('gallery');
+  const goHub     = () => { history.replaceState({ view: 'hub' }, '');  setView('hub'); };
+  const goChat    = () => { history.replaceState({ view: 'chat' }, ''); setView('chat'); };
+  const goGallery = () => { history.pushState({ view: 'gallery' }, ''); setView('gallery'); };
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
@@ -204,6 +220,7 @@ export default function App() {
           )}
         </>
       )}
+
     </div>
   );
 }

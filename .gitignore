@@ -37,6 +37,7 @@ Thumbs.db
 # Cache
 .cache/
 .eslintcache
+__pycache__/
 
 # Misc
 *.pid

@@ -1,6 +1,6 @@
 // Palette inspired by Nogizaka46 member image colors
 export const AVATAR_PALETTE = [
-  '#e82598', // Nogizaka pink
+  '#e82598', 
   '#9c27b0',
   '#5c6bc0',
   '#26a69a',
