@@ -71,20 +71,20 @@ export default function MessageBubble({ message, memberColor, memberInitial, ava
           </div>
         )}
 
-        {/* Timestamp */}
-        <div className="bubble-time">{timeStr}</div>
+        {/* Timestamp and Favorite star */}
+        <div className="bubble-time-wrapper">
+          <div className="bubble-time">{timeStr}</div>
+          {onToggleFavorite && (
+            <button
+              className={`msg-fav-btn${isFavorite ? ' active' : ''}`}
+              onClick={() => onToggleFavorite(message)}
+              aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              {isFavorite ? '★' : '☆'}
+            </button>
+          )}
+        </div>
       </div>
-
-      {/* Favorite star */}
-      {onToggleFavorite && (
-        <button
-          className={`msg-fav-btn${isFavorite ? ' active' : ''}`}
-          onClick={() => onToggleFavorite(message)}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          {isFavorite ? '★' : '☆'}
-        </button>
-      )}
 
       {/* Lightbox for image preview */}
       {lightbox && imageUrl && (

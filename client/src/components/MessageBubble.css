@@ -125,27 +125,34 @@
   height: 32px;
 }
 
-/* ── Timestamp ── */
-.bubble-time {
-  font-size: 10px;
-  color: var(--text-muted);
+/* ── Timestamp and Star wrapper ── */
+.bubble-time-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 3px;
   padding-left: 4px;
 }
 
+/* ── Timestamp ── */
+.bubble-time {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
 /* ── Favorite star button ── */
 .msg-fav-btn {
-  align-self: center;
   flex-shrink: 0;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-muted);
   opacity: 0;
-  padding: 4px 6px;
+  padding: 0;
   transition: opacity 0.15s, color 0.15s;
   line-height: 1;
+  margin-left: auto;
 }
 
 .bubble-row:hover .msg-fav-btn,

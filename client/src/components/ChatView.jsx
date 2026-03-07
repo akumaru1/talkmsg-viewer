@@ -21,6 +21,7 @@ export default function ChatView({
 
   const [calOpen,      setCalOpen]    = useState(false);
   const [favOpen,      setFavOpen]    = useState(false);
+  const favOpenRef                    = useRef(false);
   // Months fetched from the dedicated API endpoint (covers ALL messages)
   const [allMonths,    setAllMonths]  = useState([]);
 
@@ -31,6 +32,21 @@ export default function ChatView({
     [...chatFavorites].sort((a, b) => (a.timestamp || '').localeCompare(b.timestamp || '')),
     [chatFavorites]
   );
+
+  // Favorites with date separators interleaved
+  const groupedFavorites = useMemo(() => {
+    const result = [];
+    let lastDay = null;
+    for (const msg of sortedFavorites) {
+      const dayKey = (msg.timestamp || '').slice(0, 8);
+      if (dayKey && dayKey !== lastDay) {
+        result.push({ type: 'date-sep', key: `fav-ds-${dayKey}`, ts: msg.timestamp });
+        lastDay = dayKey;
+      }
+      result.push({ type: 'message', key: msg.id, msg });
+    }
+    return result;
+  }, [sortedFavorites]);
 
   const color     = isAnnouncement(member) ? '#607d8b' : memberColor(member.name);
   const initial   = isAnnouncement(member) ? '📢' : avatarChar(member.name);
@@ -101,6 +117,27 @@ export default function ChatView({
       .then(d => Array.isArray(d) ? setAllMonths(d) : setAllMonths([]))
       .catch(() => setAllMonths([]));
   }, [member]);
+
+  // ── Keep ref in sync so the popstate handler always sees the latest value ─
+  useEffect(() => { favOpenRef.current = favOpen; }, [favOpen]);
+
+  // ── Push history entry when favorites panel opens so back closes it ───────
+  useEffect(() => {
+    if (favOpen) {
+      history.pushState({ view: 'chat', favPanel: true }, '');
+    }
+  }, [favOpen]);
+
+  // ── Intercept back button to close the favorites panel if it's open ───────
+  useEffect(() => {
+    const handlePop = () => {
+      if (favOpenRef.current) {
+        setFavOpen(false);
+      }
+    };
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, []);
 
   // ── Jump to a specific month ────────────────────────────────────────────────────
   const handleJump = (yyyymm) => {
@@ -260,17 +297,23 @@ export default function ChatView({
             {sortedFavorites.length === 0 ? (
               <div className="chat-empty">お気に入りのメッセージはありません</div>
             ) : (
-              sortedFavorites.map(msg => (
-                <MessageBubble
-                  key={msg.id}
-                  message={msg}
-                  memberColor={color}
-                  memberInitial={initial}
-                  avatarUrl={avatarUrl}
-                  isFavorite
-                  onToggleFavorite={onToggleChatFavorite}
-                />
-              ))
+              groupedFavorites.map(item =>
+                item.type === 'date-sep' ? (
+                  <div key={item.key} className="date-separator">
+                    <span>{formatDate(item.ts)}</span>
+                  </div>
+                ) : (
+                  <MessageBubble
+                    key={item.key}
+                    message={item.msg}
+                    memberColor={color}
+                    memberInitial={initial}
+                    avatarUrl={avatarUrl}
+                    isFavorite
+                    onToggleFavorite={onToggleChatFavorite}
+                  />
+                )
+              )
             )}
           </div>
         </div>
