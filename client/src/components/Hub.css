@@ -28,89 +28,35 @@
   right: 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
-.header-sync-dot {
-  width: 10px;
-  height: 10px;
-}
-
-.hub-header-icon {
+/* ── Sync button ────────────────────────────────────────────────────────────── */
+.sync-btn {
+  background: none;
+  border: none;
+  padding: 4px;
   font-size: 20px;
-  opacity: 0.9;
   cursor: pointer;
-  user-select: none;
-}
-
-/* ── Settings dropdown ─────────────────────────────────────────────────────── */
-.settings-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-  overflow: hidden;
-  min-width: 190px;
-  z-index: 100;
-}
-
-.settings-menu-item {
+  opacity: 0.9;
+  line-height: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  width: 100%;
-  padding: 13px 16px;
-  border: none;
-  background: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #222;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s;
+  justify-content: center;
+  transform-origin: center;
 }
 
-.settings-menu-item:not(:last-child) {
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.settings-menu-item:hover:not(:disabled) {
-  background: #f6eeff;
-}
-
-.settings-menu-item:disabled {
-  opacity: 0.55;
+.sync-btn:disabled {
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
-/* ── Sync status dot ───────────────────────────────────────────────────────── */
-.sync-dot {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.sync-btn.spinning {
+  animation: spin 1s linear infinite;
 }
 
-.sync-dot.running {
-  background: #f3a800;
-  animation: pulse-dot 1s ease-in-out infinite;
-}
-
-.sync-dot.success {
-  background: #28c76f;
-}
-
-.sync-dot.error {
-  background: #ea5455;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1;   transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.75); }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 /* ── Scrollable body ───────────────────────────────────────────────────────── */

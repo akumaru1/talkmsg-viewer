@@ -1,132 +1,104 @@
 # Mobame Viewer
 
-A local web app for browsing downloaded Nogizaka46 Mobame (mobile mail) messages, including text, images, videos, and voice clips.
+A local web viewer for Nogizaka46 Mobame (mobile mail) messages.  
+Browse chat messages, photos, and videos from your downloaded Mobame data through a clean React interface.
 
-> **Disclaimer:** This project was generated with the assistance of AI (GitHub Copilot). Use at your own discretion.
+> **⚠️ AI Disclaimer**  
+> This project was generated with the assistance of an AI coding assistant (GitHub Copilot). Use it at your own discretion.
 
 ---
 
 ## Prerequisites
 
-Make sure the following are installed on your machine before getting started:
+| Tool | Minimum Version | Download |
+|------|----------------|----------|
+| **Node.js** | v18 or later | https://nodejs.org |
+| **npm** | v9 or later (bundled with Node.js) | — |
+| **Git** | any recent version | https://git-scm.com |
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| **Node.js** | 18 or newer | [nodejs.org](https://nodejs.org) |
-| **npm** | comes with Node.js | |
-| **ffprobe** | any recent | Part of [FFmpeg](https://ffmpeg.org/download.html) — used to detect video files |
-
-To verify your installs:
-
-```bash
-node -v
-npm -v
-ffprobe -version
-```
+You also need your **downloaded Mobame media folder** (`colmsg` directory from your Mobame backup tool).
 
 ---
 
 ## Setup
 
-### 1. Clone and install
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/akumaru1/mobame.git
 cd mobame
+```
+
+### 2. Install all dependencies
+
+```bash
 npm run setup
 ```
 
-`npm run setup` installs all dependencies for the root, server, and client in one step.
+This installs root, server, and client dependencies in one command and auto-creates a `.env` file from the template.
 
-### 2. Configure your media path
+### 3. Set your media directory
 
-```bash
-cp .env.example .env
-```
-
-Open `.env` and set `MEDIA_DIR` to the path of your downloaded messages folder (`colmsg`):
+Open the `.env` file that was just created and point `MEDIA_DIR` at your Mobame media folder:
 
 ```env
-# Path to the folder that contains your downloaded messages (the colmsg root).
-# Each sub-folder is a group, each sub-sub-folder is a member.
-MEDIA_DIR=/path/to/your/colmsg
-
-# Port the Express server listens on (default: 3001)
+MEDIA_DIR=/absolute/path/to/your/colmsg
 PORT=3001
 ```
 
-The `colmsg` folder is expected to have this structure:
+**Example paths:**
 
-```
-colmsg/
-└── 乃木坂46/
-    ├── 田村真佑/
-    │   ├── 20240101120000.txt
-    │   ├── 20240101120000.jpg
-    │   └── avatar.jpg
-    ├── 久保史緒里/
-    │   └── ...
-    └── ...
-```
+- Linux/macOS: `MEDIA_DIR=/home/yourname/Downloads/colmsg`
+- Windows: `MEDIA_DIR=C:/Users/yourname/Downloads/colmsg`
 
----
+> The folder structure should look like `colmsg/乃木坂46/田村真佑/xxxxxx.jpg`
 
-## Generating the data index
-
-Before running the app for the first time, you need to build the data index. You have two options:
-
-**Option A — via the app (easiest):**
-Once the app is running, click the **⚙️** icon in the top-right corner and choose **Sync All**. The app will scan your `colmsg` folder in the background and notify you when it's done. Refresh the page afterward.
-
-**Option B — via the command line:**
-
-```bash
-npm run generate
-```
-
-This scans your `colmsg` folder and writes JSON index files into the `data/` directory. You should see output like:
-
-```
-Scanning: 乃木坂46 / 田村真佑 …
-Scanning: 乃木坂46 / 久保史緒里 …
-...
-Done! Created index and 13 member files.
-```
-
-Run either option again any time you add new downloaded messages.
-
----
-
-## Running the app
-
-### Development mode (recommended)
+### 4. Start the app
 
 ```bash
 npm run dev
 ```
 
-This starts the backend and frontend together. Open your browser at **http://localhost:5173**.
+This starts both the Express backend and the Vite frontend simultaneously.  
+Open your browser at **http://localhost:5173**
 
-To run them separately in two terminals:
+> Data generation can be triggered from within the app once it's running.
 
-```bash
-# Terminal 1 – backend
-npm run server
+---
 
-# Terminal 2 – frontend
-npm run client
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run setup` | Install all dependencies and create `.env` |
+| `npm run dev` | Start server + client in development mode |
+| `npm run server` | Start only the Express server |
+| `npm run client` | Start only the Vite frontend |
+| `npm run generate` | Manually scan `MEDIA_DIR` and rebuild the `data/` JSON files |
+
+---
+
+## Project Structure
+
+```
+mobame/
+├── client/          # React + Vite frontend
+├── server/          # Express backend
+├── data/            # Generated JSON data (created on first generate)
+├── generate_data.js # Script that builds data/ from your MEDIA_DIR
+├── .env.example     # Environment variable template
+└── package.json     # Root monorepo scripts
 ```
 
-### Production mode (optional)
+---
 
-Build the frontend into a static bundle served directly by Express:
+## Troubleshooting
 
-```bash
-cd client
-npm run build
-cd ..
-npm run server
-```
+**`Error: MEDIA_DIR is not set`**  
+→ Open `.env` and make sure `MEDIA_DIR` is set to the correct path, then restart with `npm run dev`.
 
-Then open **http://localhost:3001**
+**Port conflict on 3001**  
+→ Change `PORT=3001` to another port in `.env`, then restart with `npm run dev`.
 
+**Media images/videos not loading**  
+→ Verify `MEDIA_DIR` in `.env` points to the `colmsg` root folder (the one containing group subfolders like `乃木坂46/`).

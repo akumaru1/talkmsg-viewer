@@ -92,18 +92,11 @@
   font-weight: 600;
 }
 
-/* Already-loaded months get a subtle pink tint */
-.cal-month-btn.loaded {
+/* Currently viewed month gets a pink border */
+.cal-month-btn.current {
   border-color: var(--pink);
   color: var(--pink-dark);
-}
-
-/* Small arrow shown on months not yet in the viewport */
-.cal-month-unloaded {
-  display: block;
-  font-size: 9px;
-  color: var(--text-muted);
-  margin-top: 2px;
+  font-weight: 600;
 }
 
 .cal-empty {

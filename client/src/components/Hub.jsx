@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { replaceName } from '../utils/textUtils.js';
 import './Hub.css';
@@ -21,24 +21,10 @@ export default function Hub({ members, loading, onSelectMember }) {
   const online  = regular.filter(m => ONLINE_MEMBERS.has(m.name));
   const offline = regular.filter(m => !ONLINE_MEMBERS.has(m.name));
 
-  // ── Settings dropdown + sync state ─────────────────────────────────────────
-  const [menuOpen, setMenuOpen] = useState(false);
+  // ── Sync state ──────────────────────────────────────────────────────────────
   const [syncStatus, setSyncStatus] = useState({
     generate_data: { running: false, lastStatus: null },
   });
-  const menuRef = useRef(null);
-
-  // Close menu on outside click
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [menuOpen]);
 
   // Fetch real status on mount so indicator resumes after navigating away
   useEffect(() => {
@@ -92,41 +78,22 @@ export default function Hub({ members, loading, onSelectMember }) {
         poll();
       }
     } catch {}
-    setMenuOpen(false);
   };
 
-  const SyncIndicator = ({ scriptKey }) => {
-    const s = syncStatus[scriptKey];
-    if (s.running) return <span className="sync-dot running" title="Running…" />;
-    return null;
-  };
+  const isSyncing = syncStatus.generate_data.running;
 
   return (
     <div className="hub">
       {/* ── Header ── */}
       <header className="hub-header">
         <span className="hub-header-title">Talk</span>
-        <div className="hub-header-icon-wrap" ref={menuRef}>
-          {Object.values(syncStatus).some(s => s.running) && (
-            <span className="sync-dot running header-sync-dot" title="Sync running…" />
-          )}
-          <span
-            className="hub-header-icon"
-            onClick={() => setMenuOpen(o => !o)}
-            title="Settings"
-          >⚙️</span>
-          {menuOpen && (
-            <div className="settings-menu">
-              <button
-                className="settings-menu-item"
-                onClick={() => triggerSync('generate_data')}
-                disabled={syncStatus.generate_data.running}
-              >
-                Sync All
-                <SyncIndicator scriptKey="generate_data" />
-              </button>
-            </div>
-          )}
+        <div className="hub-header-icon-wrap">
+          <button
+            className={`sync-btn${isSyncing ? ' spinning' : ''}`}
+            onClick={() => !isSyncing && triggerSync('generate_data')}
+            disabled={isSyncing}
+            title={isSyncing ? 'Syncing…' : 'Sync All'}
+          >🔄</button>
         </div>
       </header>
 
@@ -169,6 +136,10 @@ export default function Hub({ members, loading, onSelectMember }) {
             {announce.length > 0 && (
               <section>
                 <div className="hub-section-label">お知らせ</div>
+                  {/* ── Divider ── */}
+                  {online.length > 0 && offline.length > 0 && (
+                    <hr className="hub-divider" />
+                  )}
                 {announce.map(m => (
                   <MemberRow key={m.data_file} member={m} onSelect={onSelectMember} announce />
                 ))}
@@ -176,7 +147,11 @@ export default function Hub({ members, loading, onSelectMember }) {
             )}
 
             {members.length === 0 && !loading && (
-              <div className="hub-empty">メンバーが見つかりません</div>
+              <div className="hub-empty">
+                メンバーが見つかりません
+                <br />
+                Scanしてください
+                </div>
             )}
           </>
         )}

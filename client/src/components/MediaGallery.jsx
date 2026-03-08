@@ -11,6 +11,7 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
   const [month,    setMonth]    = useState('all'); // 'all' | 'YYYYMM'
   const [lightbox, setLightbox] = useState(null);  // { src, caption }
   const [calOpen,  setCalOpen]  = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(null);
   const [allMonths, setAllMonths] = useState([]);
   const jumpTargetRef = useRef(null);
 
@@ -166,7 +167,7 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
           }
         </div>
         <div className="gallery-title">
-          <div className="gallery-name">{member.name} のメディア</div>
+          <div className="gallery-name">メディア</div>
         </div>
       </header>
 
@@ -188,7 +189,18 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
         {/* Month jump */}
         <button
           className="filter-chip cal-chip"
-          onClick={() => setCalOpen(true)}
+          onClick={() => {
+            const sections = [...(scrollAreaRef.current?.querySelectorAll('.gallery-month-section[id^="gallery-month-"]') ?? [])];
+            if (sections.length > 0) {
+              const top = scrollAreaRef.current.getBoundingClientRect().top;
+              let cur = sections[0].id.replace('gallery-month-', '');
+              for (const el of sections) {
+                if (el.getBoundingClientRect().top <= top + 10) cur = el.id.replace('gallery-month-', '');
+              }
+              setCurrentMonth(cur);
+            }
+            setCalOpen(true);
+          }}
           aria-label="Calendar"
         >
           📅
@@ -272,7 +284,7 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
       {calOpen && (
         <CalendarSearch
           months={allMonths}
-          loadedMonths={new Set(groups.map(g => g.key))}
+          currentMonth={currentMonth}
           onJump={handleCalJump}
           onClose={() => setCalOpen(false)}
         />

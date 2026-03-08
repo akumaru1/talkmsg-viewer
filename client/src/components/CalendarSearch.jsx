@@ -3,8 +3,8 @@ import { createPortal } from 'react-dom';
 import { formatMonthYear } from '../utils/parseTime.js';
 import './CalendarSearch.css';
 
-// loadedMonths: Set of 'YYYYMM' strings already in the chat viewport
-export default function CalendarSearch({ months, loadedMonths = new Set(), onJump, onClose }) {
+// currentMonth: 'YYYYMM' string of the month currently visible in the chat
+export default function CalendarSearch({ months, currentMonth, onJump, onClose }) {
   // Close on Escape
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
@@ -45,11 +45,10 @@ export default function CalendarSearch({ months, loadedMonths = new Set(), onJum
                   {byYear[year].map(m => (
                     <button
                       key={m}
-                      className={`cal-month-btn ${loadedMonths.has(m) ? 'loaded' : ''}`}
+                      className={`cal-month-btn ${m === currentMonth ? 'current' : ''}`}
                       onClick={() => onJump(m)}
                     >
                       {formatMonthYear(m).replace(/^\d+年/, '')}
-                      {!loadedMonths.has(m) && <span className="cal-month-unloaded" title="まだ読み込まれていません">↑</span>}
                     </button>
                   ))}
                 </div>

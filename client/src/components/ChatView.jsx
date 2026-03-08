@@ -1,6 +1,6 @@
 import { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
-import { formatDate, isSameDay, getMonthKey } from '../utils/parseTime.js';
+import { formatDate, isSameDay } from '../utils/parseTime.js';
 import MessageBubble from './MessageBubble.jsx';
 import CalendarSearch from './CalendarSearch.jsx';
 import './ChatView.css';
@@ -20,6 +20,7 @@ export default function ChatView({
   const jumpTargetRef  = useRef(null);
 
   const [calOpen,      setCalOpen]    = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(null);
   const [favOpen,      setFavOpen]    = useState(false);
   const favOpenRef                    = useRef(false);
   // Months fetched from the dedicated API endpoint (covers ALL messages)
@@ -198,7 +199,18 @@ export default function ChatView({
         {totalMessages > 0 && (
           <div className="chat-count">{totalMessages}<br />Messages</div>
         )}
-        <button className="icon-btn pink" onClick={() => setCalOpen(true)} aria-label="Calendar">📅</button>
+        <button className="icon-btn pink" onClick={() => {
+          const anchors = [...(scrollAreaRef.current?.querySelectorAll('.month-anchor[id^="month-"]') ?? [])];
+          if (anchors.length > 0) {
+            const top = scrollAreaRef.current.getBoundingClientRect().top;
+            let cur = anchors[0].id.replace('month-', '');
+            for (const el of anchors) {
+              if (el.getBoundingClientRect().top <= top + 10) cur = el.id.replace('month-', '');
+            }
+            setCurrentMonth(cur);
+          }
+          setCalOpen(true);
+        }} aria-label="Calendar">📅</button>
         <button className="icon-btn pink" onClick={onGallery} aria-label="Gallery">🖼️</button>
         <button
           className={`icon-btn pink${favOpen ? ' active-fav' : ''}`}
@@ -280,7 +292,7 @@ export default function ChatView({
       {calOpen && (
         <CalendarSearch
           months={allMonths}
-          loadedMonths={new Set(messages.map(m => getMonthKey(m.timestamp)))}
+          currentMonth={currentMonth}
           onJump={handleJump}
           onClose={() => setCalOpen(false)}
         />
