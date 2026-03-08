@@ -3,9 +3,24 @@ import json
 import pathlib
 import subprocess
 
+# --- Load .env from the project root (no extra packages required) ---
+_env_file = pathlib.Path(__file__).parent / '.env'
+if _env_file.exists():
+    for _line in _env_file.read_text(encoding='utf-8').splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith('#') and '=' in _line:
+            _k, _v = _line.split('=', 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 # --- CONFIGURATION ---
-root_dir = "/home/akumaru/Downloads/colmsg"
-output_dir = pathlib.Path("./data")
+_media_dir = os.environ.get('MEDIA_DIR', '')
+if not _media_dir:
+    raise SystemExit(
+        "ERROR: MEDIA_DIR is not set.\n"
+        "Copy .env.example to .env and set MEDIA_DIR to the path of your colmsg folder."
+    )
+root_dir = _media_dir
+output_dir = pathlib.Path(__file__).parent / 'data'
 output_dir.mkdir(exist_ok=True)
 
 def has_video_track(file_path):

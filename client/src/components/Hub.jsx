@@ -77,6 +77,21 @@ export default function Hub({ members, loading, onSelectMember }) {
         ...prev,
         [script]: { running: true, lastStatus: null },
       }));
+      if (script === 'generate_data') {
+        // Poll until the sync is done, then show alert
+        const poll = async () => {
+          try {
+            while (true) {
+              const res = await fetch('/api/sync/status');
+              const data = await res.json();
+              if (!data.generate_data.running) break;
+              await new Promise(r => setTimeout(r, 1000));
+            }
+            alert('Sync complete! Please refresh the page.');
+          } catch {}
+        };
+        poll();
+      }
     } catch {}
     setMenuOpen(false);
   };
@@ -110,14 +125,6 @@ export default function Hub({ members, loading, onSelectMember }) {
               >
                 Sync All
                 <SyncIndicator scriptKey="generate_data" />
-              </button>
-              <button
-                className="settings-menu-item"
-                onClick={() => triggerSync('refresh_online')}
-                disabled={syncStatus.refresh_online.running}
-              >
-                Sync Online Members
-                <SyncIndicator scriptKey="refresh_online" />
               </button>
             </div>
           )}

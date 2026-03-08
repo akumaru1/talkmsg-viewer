@@ -3,13 +3,14 @@ const cors     = require('cors');
 const path     = require('path');
 const fs       = require('fs');
 const { spawn } = require('child_process');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT ?? '3001', 10);
 
 // ─── Paths ────────────────────────────────────────────────────────────────────
 const DATA_DIR  = path.join(__dirname, '..', 'data');
-const MEDIA_DIR = '/home/akumaru/Downloads/colmsg';
+const MEDIA_DIR = process.env.MEDIA_DIR || (() => { throw new Error('MEDIA_DIR is not set. Copy .env.example to .env and fill in MEDIA_DIR.'); })();
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
