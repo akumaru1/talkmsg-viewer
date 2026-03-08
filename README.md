@@ -14,7 +14,6 @@ Make sure the following are installed on your machine before getting started:
 |------|---------|-------|
 | **Node.js** | 18 or newer | [nodejs.org](https://nodejs.org) |
 | **npm** | comes with Node.js | |
-| **Python** | 3.9 or newer | [python.org](https://python.org) |
 | **ffprobe** | any recent | Part of [FFmpeg](https://ffmpeg.org/download.html) — used to detect video files |
 
 To verify your installs:
@@ -22,50 +21,30 @@ To verify your installs:
 ```bash
 node -v
 npm -v
-python --version   # or python3 --version on Linux/macOS
 ffprobe -version
 ```
 
 ---
 
-## Installation
+## Setup
 
-### 1. Clone the repository
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/akumaru1/mobame.git
 cd mobame
+npm run setup
 ```
 
-### 2. Install server dependencies
+`npm run setup` installs all dependencies for the root, server, and client in one step.
 
-```bash
-cd server
-npm install
-cd ..
-```
-
-### 3. Install client dependencies
-
-```bash
-cd client
-npm install
-cd ..
-```
-
----
-
-## Configuration
-
-### 1. Copy the example environment file
+### 2. Configure your media path
 
 ```bash
 cp .env.example .env
 ```
 
-### 2. Edit `.env`
-
-Open `.env` in any text editor and set `MEDIA_DIR` to the path of your downloaded messages folder (`colmsg`):
+Open `.env` and set `MEDIA_DIR` to the path of your downloaded messages folder (`colmsg`):
 
 ```env
 # Path to the folder that contains your downloaded messages (the colmsg root).
@@ -102,7 +81,7 @@ Once the app is running, click the **⚙️** icon in the top-right corner and c
 **Option B — via the command line:**
 
 ```bash
-python generate_data.py
+npm run generate
 ```
 
 This scans your `colmsg` folder and writes JSON index files into the `data/` directory. You should see output like:
@@ -114,8 +93,6 @@ Scanning: 乃木坂46 / 久保史緒里 …
 Done! Created index and 13 member files.
 ```
 
-> **Note:** On some systems you may need to use `python3` instead of `python`.
-
 Run either option again any time you add new downloaded messages.
 
 ---
@@ -124,13 +101,11 @@ Run either option again any time you add new downloaded messages.
 
 ### Development mode (recommended)
 
-Starts both the backend server and the frontend dev server together:
-
 ```bash
 npm run dev
 ```
 
-Then open your browser at **http://localhost:5173**
+This starts the backend and frontend together. Open your browser at **http://localhost:5173**.
 
 To run them separately in two terminals:
 

@@ -179,16 +179,14 @@ app.get('/api/offset/:dataFile', (req, res) => {
 const ROOT_DIR = path.join(__dirname, '..');
 
 const SCRIPTS = {
-  generate_data:  path.join(ROOT_DIR, 'generate_data.py'),
-  refresh_online: path.join(ROOT_DIR, 'refresh_online.py'),
+  generate_data: path.join(ROOT_DIR, 'generate_data.js'),
 };
 
 const syncState = {
-  generate_data:  { running: false, lastStatus: null },
-  refresh_online: { running: false, lastStatus: null },
+  generate_data: { running: false, lastStatus: null },
 };
 
-// POST /api/sync  — body: { script: 'generate_data' | 'refresh_online' }
+// POST /api/sync  — body: { script: 'generate_data' }
 app.post('/api/sync', (req, res) => {
   const { script } = req.body;
   if (!SCRIPTS[script]) return res.status(400).json({ error: 'Unknown script' });
@@ -197,7 +195,7 @@ app.post('/api/sync', (req, res) => {
   syncState[script].running    = true;
   syncState[script].lastStatus = null;
 
-  const proc = spawn('python3', [SCRIPTS[script]], { cwd: ROOT_DIR });
+  const proc = spawn('node', [SCRIPTS[script]], { cwd: ROOT_DIR });
   proc.stdout.on('data', (d) => process.stdout.write(`[${script}] ${d}`));
   proc.stderr.on('data', (d) => process.stderr.write(`[${script}] ${d}`));
   proc.on('close', (code) => {
@@ -212,8 +210,7 @@ app.post('/api/sync', (req, res) => {
 // GET /api/sync/status
 app.get('/api/sync/status', (req, res) => {
   res.json({
-    generate_data:  syncState.generate_data,
-    refresh_online: syncState.refresh_online,
+    generate_data: syncState.generate_data,
   });
 });
 

@@ -24,8 +24,7 @@ export default function Hub({ members, loading, onSelectMember }) {
   // ── Settings dropdown + sync state ─────────────────────────────────────────
   const [menuOpen, setMenuOpen] = useState(false);
   const [syncStatus, setSyncStatus] = useState({
-    generate_data:  { running: false, lastStatus: null },
-    refresh_online: { running: false, lastStatus: null },
+    generate_data: { running: false, lastStatus: null },
   });
   const menuRef = useRef(null);
 

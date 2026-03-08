@@ -4,8 +4,13 @@
   "description": "Nogizaka46 Mobame viewer – monorepo root",
   "private": true,
   "scripts": {
-    "server": "node server/index.js",
-    "client": "cd client && node node_modules/.bin/vite --host",
-    "dev":    "npm run server & npm run client"
+    "setup":    "npm install && npm install --prefix server && npm install --prefix client",
+    "server":   "node server/index.js",
+    "client":   "npm run --prefix client dev",
+    "dev":      "concurrently --kill-others-on-fail --names \"server,client\" --prefix-colors \"blue,cyan\" \"npm run server\" \"npm run client\"",
+    "generate": "node generate_data.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
