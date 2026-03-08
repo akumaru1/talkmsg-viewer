@@ -2,7 +2,7 @@
 
 const fs   = require('fs');
 const path = require('path');
-const { spawnSync } = require('child_process');
+
 
 // --- Load .env from project root (no extra packages required) ----------------
 const envFile = path.join(__dirname, '.env');
@@ -35,16 +35,28 @@ const MEDIA_EXTS = new Set(['.txt', '.jpg', '.jpeg', '.png', '.mp4', '.mov', '.a
 
 // -----------------------------------------------------------------------------
 
+// Detects a video track by scanning for the MP4 'vide' handler atom in the file header/footer.
+// Checks both the start (faststart / moov-at-front) and end (moov-at-back) of the file.
 function hasVideoTrack(filePath) {
+  const VIDEO_MARKER = Buffer.from('vide');
   try {
-    const result = spawnSync(
-      'ffprobe',
-      ['-v', 'error', '-show_entries', 'stream=codec_type', '-of', 'json', filePath],
-      { timeout: 5000 }
-    );
-    if (result.status !== 0) throw new Error('ffprobe failed');
-    const data = JSON.parse(result.stdout.toString());
-    return (data.streams || []).some(s => s.codec_type === 'video');
+    const stat  = fs.statSync(filePath);
+    const chunk = Math.min(stat.size, 65536);
+    const fd    = fs.openSync(filePath, 'r');
+    try {
+      const startBuf = Buffer.alloc(chunk);
+      fs.readSync(fd, startBuf, 0, chunk, 0);
+      if (startBuf.includes(VIDEO_MARKER)) return true;
+
+      if (stat.size > chunk) {
+        const endBuf = Buffer.alloc(chunk);
+        fs.readSync(fd, endBuf, 0, chunk, stat.size - chunk);
+        if (endBuf.includes(VIDEO_MARKER)) return true;
+      }
+    } finally {
+      fs.closeSync(fd);
+    }
+    return false;
   } catch {
     // Fall back to size heuristic (≥2 MB → treat as video)
     try { return fs.statSync(filePath).size >= 2_000_000; } catch { return false; }
