@@ -143,9 +143,14 @@ function processMemberDir(rootPath, memberPath) {
   );
 
   // Avatar
-  const avatarP   = path.join(rootPath, groupName, memberName, 'avatar.png');
-  const relAvatar = fs.existsSync(avatarP) ? path.relative(rootPath, avatarP).split(path.sep).join('/') : null;
-  const avatarMtime = fs.existsSync(avatarP) ? Math.floor(fs.statSync(avatarP).mtimeMs / 1000) : null;
+  let avatarP = null;
+  for (const ext of ['.png', '.jpg', '.jpeg']) {
+    const p = path.join(rootPath, groupName, memberName, `avatar${ext}`);
+    if (fs.existsSync(p)) { avatarP = p; break; }
+  }
+
+  const relAvatar = avatarP ? path.relative(rootPath, avatarP).split(path.sep).join('/') : null;
+  const avatarMtime = avatarP ? Math.floor(fs.statSync(avatarP).mtimeMs / 1000) : null;
 
   // Hub preview
   let lastPreview = '';

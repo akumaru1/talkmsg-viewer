@@ -5,12 +5,10 @@ import { replaceName } from '../utils/textUtils.js';
 import './Hub.css';
 
 // ── Online members from .env (VITE_ONLINE_MEMBERS, comma-separated) ──────────
-const ONLINE_MEMBERS = new Set(
-  (import.meta.env.VITE_ONLINE_MEMBERS ?? '')
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean)
-);
+// If VITE_ONLINE_MEMBERS is not set, all members are treated as online.
+const _raw = (import.meta.env.VITE_ONLINE_MEMBERS ?? '')
+  .split(',').map(s => s.trim()).filter(Boolean);
+const ONLINE_MEMBERS = _raw.length > 0 ? new Set(_raw) : null; // null = all online
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Hub({ members, loading, onSelectMember }) {
@@ -18,8 +16,8 @@ export default function Hub({ members, loading, onSelectMember }) {
   const regular  = members.filter(m => !isAnnouncement(m));
   const announce = members.filter(m => isAnnouncement(m));
 
-  const online  = regular.filter(m => ONLINE_MEMBERS.has(m.name));
-  const offline = regular.filter(m => !ONLINE_MEMBERS.has(m.name));
+  const online  = ONLINE_MEMBERS === null ? regular : regular.filter(m => ONLINE_MEMBERS.has(m.name));
+  const offline = ONLINE_MEMBERS === null ? []      : regular.filter(m => !ONLINE_MEMBERS.has(m.name));
 
   // ── Sync state ──────────────────────────────────────────────────────────────
   const [syncStatus, setSyncStatus] = useState({
