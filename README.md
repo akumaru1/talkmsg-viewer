@@ -1,4 +1,4 @@
-# Talk Viewer
+# Talkmsg Viewer
 
 A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Talk Messages.
 
@@ -37,8 +37,8 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/akumaru1/talk-viewer.git
-cd talk-viewer
+git clone https://github.com/akumaru1/talkmsg-viewer.git
+cd talkmsg-viewer
 ```
 
 ### 2. Install all dependencies
