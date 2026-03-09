@@ -3,6 +3,13 @@
 A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Mobame (mobile mail) messages.
 
 ---
+## App Preview
+
+| Home Screen | Chat View | Media Gallery |
+| :---: | :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/6a92de4d-2c88-4911-8b4d-3166d3f02443" width="32%"> | <img src="https://github.com/user-attachments/assets/54702dae-5c44-4d65-acbc-75578709a830" width="32%"> | <img src="https://github.com/user-attachments/assets/82e1c026-3cfd-469f-a209-190073eb146c" width="32%"> |
+
+---
 
 ## Features
 
