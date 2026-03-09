@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
+import { CgSync } from 'react-icons/cg';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { replaceName } from '../utils/textUtils.js';
 import './Hub.css';
 
-// ── Manually set which members are "online" ──────────────────────────────────
-// Add or remove member names (in Japanese) to control their status.
-const ONLINE_MEMBERS = new Set([
-  '一ノ瀬美空',
-  '井上和',
-  '奥田いろは',
-  '田村真佑',
-]);
+// ── Online members from .env (VITE_ONLINE_MEMBERS, comma-separated) ──────────
+const ONLINE_MEMBERS = new Set(
+  (import.meta.env.VITE_ONLINE_MEMBERS ?? '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+);
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Hub({ members, loading, onSelectMember }) {
@@ -93,7 +93,7 @@ export default function Hub({ members, loading, onSelectMember }) {
             onClick={() => !isSyncing && triggerSync('generate_data')}
             disabled={isSyncing}
             title={isSyncing ? 'Syncing…' : 'Sync All'}
-          >🔄</button>
+          ><CgSync /></button>
         </div>
       </header>
 

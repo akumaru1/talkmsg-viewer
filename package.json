@@ -7,7 +7,7 @@
     "setup": "npm install && npm install --prefix server && npm install --prefix client && node -e \"const fs=require('fs');if(!fs.existsSync('.env')){fs.copyFileSync('.env.example','.env');console.log('\\n✅  Created .env from .env.example\\n⚠️  Open .env and set MEDIA_DIR to your media folder path, then run: npm run dev\\n');}else{console.log('✅  .env already exists');}\"",
     "server": "node server/index.js",
     "client": "npm run --prefix client dev",
-    "dev": "concurrently --kill-others-on-fail --names \"server,client\" --prefix-colors \"blue,cyan\" \"npm run server\" \"npm run client\"",
+    "dev": "node sync-env.js && concurrently --kill-others-on-fail --names \"server,client\" --prefix-colors \"blue,cyan\" \"npm run server\" \"npm run client\"",
     "generate": "node generate_data.js"
   },
   "devDependencies": {

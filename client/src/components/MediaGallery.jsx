@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react';
+import { CgCamera, CgMic, CgCalendar } from 'react-icons/cg';
+import { PiImages } from 'react-icons/pi';
 import { formatMonthYear, getMonthKey, formatDate, formatTime, formatDateYYYYMMDD } from '../utils/parseTime.js';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { replaceName } from '../utils/textUtils.js';
@@ -175,7 +177,7 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
       <div className="gallery-filters">
         {/* Type filter */}
         <div className="filter-chips">
-          {[['all','すべて'],['image','📷'],['video','🎬'],['voice','🎙️']].map(([val, label]) => (
+          {[['all','すべて'],['image',<CgCamera />],['video',<PiImages />],['voice',<CgMic />]].map(([val, label]) => (
             <button
               key={val}
               className={`filter-chip ${filter === val ? 'active' : ''}`}
@@ -203,7 +205,7 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
           }}
           aria-label="Calendar"
         >
-          📅
+          <CgCalendar />
         </button>
       </div>
 
@@ -332,7 +334,7 @@ function VideoThumb({ src, fallback }) {
   if (thumb) {
     return <img className="tile-thumb" src={thumb} alt="" />;
   }
-  return <div className="tile-thumb tile-placeholder">🎬</div>;
+  return <div className="tile-thumb tile-placeholder"><PiImages /></div>;
 }
 
 function GalleryTile({ msg, onOpen }) {
@@ -370,7 +372,7 @@ function GalleryTile({ msg, onOpen }) {
 
       {type === 'voice' && (
         <div className="tile-voice-tile">
-          <span className="voice-tile-icon">🎙️</span>
+          <span className="voice-tile-icon"><CgMic /></span>
           <div className="voice-tile-time">{formatDateYYYYMMDD(timestamp)}</div>
           {caption && <div className="voice-tile-caption">{caption.slice(0, 30)}</div>}
         </div>

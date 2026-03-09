@@ -31,27 +31,54 @@
 }
 
 /* ── Sync button ────────────────────────────────────────────────────────────── */
+/* 1. Style the Button Container */
 .sync-btn {
-  background: none;
-  border: none;
-  padding: 4px;
-  font-size: 20px;
-  cursor: pointer;
-  opacity: 0.9;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform-origin: center;
+  
+  width: 36px; 
+  height: 36px;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px; /* Modern rounded corners */
+  
+  /* Semi-transparent "Glass" effect looks great on purple */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  color: white;
+  
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* 2. Style the Icon inside */
+.sync-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+
+.sync-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.95);
+}
+
+/* 4. Disabled / Syncing State */
 .sync-btn:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.sync-btn.spinning {
+.sync-btn.spinning svg {
   animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes spin {

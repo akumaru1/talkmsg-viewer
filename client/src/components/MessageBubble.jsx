@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { CgMic } from 'react-icons/cg';
+import { PiStarLight, PiStarFill } from 'react-icons/pi';
 import { formatTime } from '../utils/parseTime.js';
 import { replaceName } from '../utils/textUtils.js';
 import Lightbox from './Lightbox.jsx';
@@ -58,7 +60,7 @@ export default function MessageBubble({ message, memberColor, memberInitial, ava
         {/* ── Voice ── */}
         {type === 'voice' && mediaUrl && (
           <div className="bubble bubble-voice">
-            <span className="voice-icon">🎙️</span>
+            <span className="voice-icon"><CgMic /></span>
             <audio src={mediaUrl} controls className="voice-audio" preload="none" />
             {cleanText && <p className="bubble-caption">{cleanText}</p>}
           </div>
@@ -80,7 +82,7 @@ export default function MessageBubble({ message, memberColor, memberInitial, ava
               onClick={() => onToggleFavorite(message)}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              {isFavorite ? '★' : '☆'}
+              {isFavorite ? <PiStarFill /> : <PiStarLight />}
             </button>
           )}
         </div>

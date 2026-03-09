@@ -1,4 +1,6 @@
 import { useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react';
+import { CgCalendar, CgImage } from 'react-icons/cg';
+import { PiStarLight, PiStarFill } from 'react-icons/pi';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { formatDate, isSameDay } from '../utils/parseTime.js';
 import MessageBubble from './MessageBubble.jsx';
@@ -210,15 +212,15 @@ export default function ChatView({
             setCurrentMonth(cur);
           }
           setCalOpen(true);
-        }} aria-label="Calendar">📅</button>
-        <button className="icon-btn pink" onClick={onGallery} aria-label="Gallery">🖼️</button>
+        }} aria-label="Calendar"><CgCalendar /></button>
+        <button className="icon-btn pink" onClick={onGallery} aria-label="Gallery"><CgImage /></button>
         <button
           className={`icon-btn pink${favOpen ? ' active-fav' : ''}`}
           onClick={() => setFavOpen(o => !o)}
           aria-label="Favorites"
           title={`Favorites (${chatFavorites.length})`}
         >
-          {chatFavorites.length > 0 ? '★' : '☆'}
+          {chatFavorites.length > 0 ? <PiStarFill /> : <PiStarLight />}
         </button>
       </header>
 

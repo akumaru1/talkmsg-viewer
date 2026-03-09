@@ -105,3 +105,11 @@
   text-align: center;
   padding: 32px 0;
 }
+
+.cal-title svg {
+  vertical-align: middle;
+  margin-right: 3px;
+  margin-top: -2px; 
+  width: 24px;  
+  height: 24px; 
+}

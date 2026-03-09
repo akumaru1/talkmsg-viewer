@@ -170,3 +170,7 @@
 .icon-btn.active-fav {
   color: #f5a623;
 }
+
+.icon-btn.pink{
+  margin-right: -4px; /* Only adds space BETWEEN buttons */
+}

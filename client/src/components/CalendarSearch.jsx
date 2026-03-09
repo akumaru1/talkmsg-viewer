@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { CgCalendar } from 'react-icons/cg';
 import { formatMonthYear } from '../utils/parseTime.js';
 import './CalendarSearch.css';
 
@@ -30,7 +31,7 @@ export default function CalendarSearch({ months, currentMonth, onJump, onClose }
         <div className="cal-handle" />
 
         <div className="cal-header">
-          <h2 className="cal-title">📅 日付にジャンプ</h2>
+          <h2 className="cal-title"><CgCalendar /> 日付にジャンプ</h2>
           <button className="icon-btn" onClick={onClose}>✕</button>
         </div>
 
