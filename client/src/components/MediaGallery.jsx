@@ -177,7 +177,7 @@ export default function MediaGallery({ member, messages, loading, loadingOlder, 
       <div className="gallery-filters">
         {/* Type filter */}
         <div className="filter-chips">
-          {[['all','すべて'],['image',<CgCamera />],['video',<PiImages />],['voice',<CgMic />]].map(([val, label]) => (
+          {[['all','すべて'],['image',<PiImages />],['video',<CgCamera />],['voice',<CgMic />]].map(([val, label]) => (
             <button
               key={val}
               className={`filter-chip ${filter === val ? 'active' : ''}`}
