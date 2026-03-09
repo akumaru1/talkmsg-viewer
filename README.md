@@ -10,8 +10,6 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 | <img src="https://github.com/user-attachments/assets/6a92de4d-2c88-4911-8b4d-3166d3f02443" width="100%"> | <img src="https://github.com/user-attachments/assets/54702dae-5c44-4d65-acbc-75578709a830" width="100%"> | <img src="https://github.com/user-attachments/assets/82e1c026-3cfd-469f-a209-190073eb146c" width="100%"> |
 
 ---
-> **⚠️ This project was generated with the assistance of an AI coding assistant (GitHub Copilot).**
----
 
 ## Features
 
@@ -88,4 +86,6 @@ Open your browser at **http://localhost:5173**
 
 > Press the sync button from the app once it's running.
 
-
+---
+> **⚠️ This project was generated with the assistance of an AI coding assistant (GitHub Copilot).**
+---
