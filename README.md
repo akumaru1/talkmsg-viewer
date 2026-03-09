@@ -1,16 +1,22 @@
-# Mobame Viewer
+# Talkmsg Viewer
 
-A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Mobame (mobile mail) messages.
+A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Talk Messages.
+
+---
+## App Preview
+
+| Home Screen | Chat View | Media Gallery |
+| :--- | :--- | :--- |
+| <img src="https://github.com/user-attachments/assets/6a92de4d-2c88-4911-8b4d-3166d3f02443" width="100%"> | <img src="https://github.com/user-attachments/assets/54702dae-5c44-4d65-acbc-75578709a830" width="100%"> | <img src="https://github.com/user-attachments/assets/82e1c026-3cfd-469f-a209-190073eb146c" width="100%"> |
 
 ---
 
 ## Features
 
-- **Calendar Jump**: Quickly jump to any date to view messages sent on that day, just like the official Mobame app.
+- **Calendar Jump**: Quickly jump to any date to view messages sent on that day, just like the official talk app.
 - **Media Gallery**: Browse all images and videos sent by members in a dedicated gallery view.
 - **Favorites**: Mark and view your favorite messages for easy access later.
 
-> **⚠️ This project was generated with the assistance of an AI coding assistant (GitHub Copilot).**
 
 ---
 
@@ -29,8 +35,8 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/akumaru1/mobame.git
-cd mobame
+git clone https://github.com/akumaru1/talkmsg-viewer.git
+cd talkmsg-viewer
 ```
 
 ### 2. Install all dependencies
@@ -81,4 +87,5 @@ Open your browser at **http://localhost:5173**
 > Press the sync button from the app once it's running.
 
 ---
-
+> **⚠️ This project was generated with the assistance of an AI coding assistant (GitHub Copilot).**
+---
