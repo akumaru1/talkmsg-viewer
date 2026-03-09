@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CgSync } from 'react-icons/cg';
 import { memberColor, avatarChar, isAnnouncement } from '../utils/memberColors.js';
 import { replaceName } from '../utils/textUtils.js';
@@ -80,6 +80,27 @@ export default function Hub({ members, loading, onSelectMember }) {
 
   const isSyncing = syncStatus.generate_data.running;
 
+  // ── Pull-to-refresh ─────────────────────────────────────────────────────────
+  const scrollRef    = useRef(null);
+  const touchStartY  = useRef(0);
+  const [pullY, setPullY] = useState(0);
+  const THRESHOLD = 72;
+
+  const onTouchStart = (e) => {
+    if (scrollRef.current?.scrollTop === 0)
+      touchStartY.current = e.touches[0].clientY;
+  };
+  const onTouchMove = (e) => {
+    if (!touchStartY.current) return;
+    const dy = e.touches[0].clientY - touchStartY.current;
+    if (dy > 0) setPullY(Math.min(dy * 0.5, THRESHOLD + 16));
+  };
+  const onTouchEnd = () => {
+    if (pullY >= THRESHOLD) window.location.reload();
+    setPullY(0);
+    touchStartY.current = 0;
+  };
+
   return (
     <div className="hub">
       {/* ── Header ── */}
@@ -96,7 +117,27 @@ export default function Hub({ members, loading, onSelectMember }) {
       </header>
 
       {/* ── Scrollable body ── */}
-      <div className="scroll-area hub-body">
+      <div
+        className="scroll-area hub-body"
+        ref={scrollRef}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Pull-to-refresh indicator */}
+        {pullY > 0 && (
+          <div style={{
+            textAlign: 'center',
+            padding: '8px',
+            color: 'var(--pink)',
+            fontSize: '13px',
+            opacity: Math.min(pullY / THRESHOLD, 1),
+            transform: `translateY(${pullY - THRESHOLD}px)`,
+            transition: 'transform 0.05s',
+          }}>
+            {pullY >= THRESHOLD ? '↑ Release to refresh' : '↓ Pull to refresh'}
+          </div>
+        )}
         {loading ? (
           <div className="spinner-wrap"><div className="spinner" /></div>
         ) : (
