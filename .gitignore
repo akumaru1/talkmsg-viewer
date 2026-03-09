@@ -33,6 +33,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+*.code-workspace
 
 # Cache
 .cache/
