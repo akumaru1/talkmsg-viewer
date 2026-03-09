@@ -53,7 +53,7 @@ ONLINE_MEMBERS=一ノ瀬美空,井上和,奥田いろは,田村真佑
 **Example paths:**
 
 - Linux/macOS: `MEDIA_DIR=/home/yourname/Downloads/colmsg`
-- Windows: `MEDIA_DIR=C:/Users/yourname/Downloads/colmsg`
+- Windows: `MEDIA_DIR=C:\Users\yourname\Downloads\colmsg`
 
 
 ### 3a. (Optional) Add member icons
