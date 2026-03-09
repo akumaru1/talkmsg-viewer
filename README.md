@@ -1,6 +1,6 @@
-# Mobame Viewer
+# Talk Viewer
 
-A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Mobame (mobile mail) messages.
+A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Talk Messages.
 
 ---
 ## App Preview
@@ -15,7 +15,7 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 
 ## Features
 
-- **Calendar Jump**: Quickly jump to any date to view messages sent on that day, just like the official Mobame app.
+- **Calendar Jump**: Quickly jump to any date to view messages sent on that day, just like the official talk app.
 - **Media Gallery**: Browse all images and videos sent by members in a dedicated gallery view.
 - **Favorites**: Mark and view your favorite messages for easy access later.
 
@@ -37,8 +37,8 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/akumaru1/mobame.git
-cd mobame
+git clone https://github.com/akumaru1/talk-viewer.git
+cd talk-viewer
 ```
 
 ### 2. Install all dependencies
