@@ -304,7 +304,7 @@ app.use((err, req, res, _next) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n  Mobame server running at http://0.0.0.0:${PORT}\n`);
+  console.log(`\n  Talkmsg server running at http://0.0.0.0:${PORT}\n`);
   console.log(`  Data dir : ${DATA_DIR}`);
   console.log(`  Media dir: ${MEDIA_DIR}\n`);
 });

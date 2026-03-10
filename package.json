@@ -1,7 +1,7 @@
 {
-  "name": "mobame",
+  "name": "",
   "version": "1.0.0",
-  "description": "Nogizaka46 Mobame viewer – monorepo root",
+  "description": "Nogizaka46 Talkmsg viewer – monorepo root",
   "private": true,
   "scripts": {
     "setup": "npm install && npm install --prefix server && npm install --prefix client && node -e \"const fs=require('fs');if(!fs.existsSync('.env')){fs.copyFileSync('.env.example','.env');console.log('\\n✅  Created .env from .env.example\\n⚠️  Open .env and set MEDIA_DIR to your media folder path, then run: npm run dev\\n');}else{console.log('✅  .env already exists');}\"",

@@ -1,10 +1,10 @@
 {
-  "name": "Mobame Viewer",
-  "short_name": "Mobame",
+  "name": "Talkmsg Viewer",
+  "short_name": "Talkmsg",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1a2e",
-  "theme_color": "#e82598",
+  "theme_color": "#CE73E8",
   "icons": [
     {
       "src": "icon-192x192.png",

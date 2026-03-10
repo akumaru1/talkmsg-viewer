@@ -1,7 +1,7 @@
 {
-  "name": "mobame-server",
+  "name": "talkmsg-server",
   "version": "1.0.0",
-  "description": "Express backend for Mobame viewer",
+  "description": "Express backend for Talkmsg viewer",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
