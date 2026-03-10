@@ -5,8 +5,9 @@ const fs       = require('fs');
 const { spawn } = require('child_process');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-const app = express();
+const app  = express();
 const PORT = parseInt(process.env.PORT ?? '3001', 10);
+const HOST = process.env.HOST ?? '127.0.0.1';
 
 // ─── Paths ────────────────────────────────────────────────────────────────────
 const DATA_DIR  = path.join(__dirname, '..', 'data');
@@ -303,8 +304,8 @@ app.use((err, req, res, _next) => {
   res.status(err.status || 500).send(err.message || 'Server error');
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n  Talkmsg server running at http://0.0.0.0:${PORT}\n`);
+app.listen(PORT, HOST, () => {
+  console.log(`\n  Talkmsg server running at http://${HOST}:${PORT}\n`);
   console.log(`  Data dir : ${DATA_DIR}`);
   console.log(`  Media dir: ${MEDIA_DIR}\n`);
 });

@@ -61,7 +61,7 @@ export default function Hub({ members, loading, onSelectMember }) {
         [script]: { running: true, lastStatus: null },
       }));
       if (script === 'generate_data') {
-        // Poll until the sync is done, then show alert
+        // Poll until the sync is done, then auto-refresh
         const poll = async () => {
           try {
             while (true) {
@@ -70,7 +70,7 @@ export default function Hub({ members, loading, onSelectMember }) {
               if (!data.generate_data.running) break;
               await new Promise(r => setTimeout(r, 1000));
             }
-            alert('Sync complete! Please refresh the page.');
+            window.location.reload();
           } catch {}
         };
         poll();
