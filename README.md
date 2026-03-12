@@ -13,9 +13,9 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 
 ## Features
 
-- **Calendar Jump**: Quickly jump to any date to view messages sent on that day, just like the official talk app.
+- **Calendar Jump**: Quickly jump to any month to view messages sent on that month onwards.
 - **Media Gallery**: Browse all images and videos sent by members in a dedicated gallery view.
-- **Favorites**: Mark and view your favorite messages for easy access later.
+- **Favorites**: Mark and view your favorite messages.
 
 
 ---
@@ -72,12 +72,14 @@ npm run setup
 
 ### 3. Set your media directory
 
-Open the `.env` file that was just created and point `MEDIA_DIR` at your `colmsg` folder:
+Open the `.env` file that was just created and point `MEDIA_DIR` at your `colmsg` folder.
+You can also add `ONLINE_MEMBERS` and `YOUR_NAME`
 
 ```env
 MEDIA_DIR=/path/to/colmsg
 PORT=3001
 ONLINE_MEMBERS=一ノ瀬美空,井上和,奥田いろは,田村真佑
+YOUR_NAME=あなた
 ```
 
 **Example paths:**
@@ -97,8 +99,6 @@ colmsg/
 │       ├── avatar.png
 │       └── xxxxxx.jpg
 ```
-
-Supported formats: `avatar.jpeg`, `avatar.jpg`, `avatar.png`
 
 ### 4. Start the app
 
