@@ -20,12 +20,36 @@ A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg
 
 ---
 
+
 ## Prerequisites
 
-| Tool | Minimum Version | 
-|------|----------------|
-| **Node.js** | v18 or later | 
-| **npm** | v9 or later (bundled with Node.js) | 
+| Tool      | Minimum Version |
+|-----------|----------------|
+| **Node.js** | v18 or later   |
+| **npm**     | v9 or later    |
+
+### Install Node.js & npm
+
+#### Linux (Debian/Ubuntu)
+```bash
+sudo apt update
+sudo apt install nodejs npm
+```
+
+#### Linux (Fedora)
+```bash
+sudo dnf install nodejs npm
+```
+
+#### Windows
+1. Download the Node.js installer from: https://nodejs.org/en/download
+2. Run the installer and follow the prompts (npm is included).
+
+After installation, verify:
+```bash
+node -v
+npm -v
+```
 
 
 ---
