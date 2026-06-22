@@ -58,6 +58,7 @@
   width: 20px;
   height: 20px;
   display: block;
+  transform: scaleX(-1);
 }
 
 
@@ -73,17 +74,16 @@
 }
 
 .sync-btn.spinning svg {
-  animation: spin 1s linear infinite;
+  animation: spin-flipped 1s linear infinite;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+@keyframes spin-flipped {
+  from {
+    transform: scaleX(-1) rotate(0deg);
+  }
+  to {
+    transform: scaleX(-1) rotate(-360deg);
+  }
 }
 
 /* ── Scrollable body ───────────────────────────────────────────────────────── */

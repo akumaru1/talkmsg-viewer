@@ -1,34 +1,34 @@
+🌐 **日本語** | [English](./README.en.md)
+
 # Talkmsg Viewer
 
-A local web viewer for downloaded [colmsg](https://github.com/proshunsuke/colmsg) Talk Messages.
+ダウンロードした [colmsg](https://github.com/proshunsuke/colmsg) のトークメッセージを閲覧するためのローカルWebビューア。
 
 ---
-## App Preview
+## アプリプレビュー
 
-| Home Screen | Chat View | Media Gallery |
+| ホーム画面 | チャット画面 | メディアギャラリー |
 | :--- | :--- | :--- |
 | <img src="https://github.com/user-attachments/assets/6a92de4d-2c88-4911-8b4d-3166d3f02443" width="100%"> | <img src="https://github.com/user-attachments/assets/54702dae-5c44-4d65-acbc-75578709a830" width="100%"> | <img src="https://github.com/user-attachments/assets/50f9f91d-e4b0-4f14-ba0e-fa11b9789c19" width="100%"> |
 
 ---
 
-## Features
+## 機能
 
-- **Calendar Jump**: Quickly jump to any month to view messages sent on that month onwards.
-- **Media Gallery**: Browse all images and videos sent by members in a dedicated gallery view.
-- **Favorites**: Mark and view your favorite messages.
-
+- **カレンダージャンプ**: 任意の月に素早く移動し、その月以降に送信されたメッセージを表示できます。
+- **メディアギャラリー**: メンバーから送信されたすべての画像や動画を、専用のギャラリービューで一覧表示・閲覧できます。
+- **お気に入り**: 気に入ったメッセージをお気に入りに登録し、後からまとめて確認できます。
 
 ---
 
+## 動作環境
 
-## Prerequisites
-
-| Tool      | Minimum Version |
+| ツール | 最小バージョン |
 |-----------|----------------|
-| **Node.js** | v18 or later   |
-| **npm**     | v9 or later    |
+| **Node.js** | v18 以降   |
+| **npm**     | v9 以降    |
 
-### Install Node.js & npm
+### Node.js & npm のインストール
 
 #### Linux (Debian/Ubuntu)
 ```bash
@@ -42,38 +42,36 @@ sudo dnf install nodejs npm
 ```
 
 #### Windows
-1. Download the Node.js installer from: https://nodejs.org/en/download
-2. Run the installer and follow the prompts (npm is included).
+1. Node.js のインストーラーをダウンロードします： https://nodejs.org/ja/download
+2. インストーラーを実行し、指示に従ってインストールします（npm も同時にインストールされます）。
 
-After installation, verify:
+インストール完了後、以下のコマンドで動作確認を行います：
 ```bash
 node -v
 npm -v
 ```
 
-
 ---
 
-## Setup
+## セットアップ
 
-### 1. Clone the repository
+### 1. リポジトリをクローンする
 
 ```bash
 git clone https://github.com/akumaru1/talkmsg-viewer.git
 cd talkmsg-viewer
 ```
 
-### 2. Install all dependencies
+### 2. 依存関係のインストール
 
 ```bash
 npm run setup
 ```
 
+### 3. メディアディレクトリの設定
 
-### 3. Set your media directory
-
-Open the `.env` file that was just created and point `MEDIA_DIR` at your `colmsg` folder.
-You can also add `ONLINE_MEMBERS` and `YOUR_NAME`
+自動生成された `.env` ファイルを開き、`MEDIA_DIR` に `colmsg` フォルダのパスを設定します。
+また、`ONLINE_MEMBERS` や `YOUR_NAME` も追加・カスタマイズできます。
 
 ```env
 MEDIA_DIR=/path/to/colmsg
@@ -82,15 +80,14 @@ ONLINE_MEMBERS=一ノ瀬美空,井上和,奥田いろは,田村真佑
 YOUR_NAME=あなた
 ```
 
-**Example paths:**
+**パスの指定例：**
 
 - Linux/macOS: `MEDIA_DIR=/home/yourname/Downloads/colmsg`
 - Windows: `MEDIA_DIR=C:\Users\yourname\Downloads\colmsg`
 
+### 3a. (任意) メンバーのアイコン画像を追加する
 
-### 3a. (Optional) Add member icons
-
-You can add profile icons for members by placing an image file in their folder:
+メンバーのフォルダに画像ファイルを配置することで、プロフィールアイコンを表示させることができます：
 
 ```
 colmsg/
@@ -100,13 +97,12 @@ colmsg/
 │       └── xxxxxx.jpg
 ```
 
-### 4. Start the app
+### 4. アプリケーションの起動
 
 ```bash
 npm run dev
 ```
 
-Open your browser at **http://localhost:5173**
+ブラウザで **http://localhost:5173** にアクセスします。
 
-> Press the sync button from the app once it's running.
-
+> アプリ起動後、画面上の同期（sync）ボタンを押してデータを読み込んでください。
