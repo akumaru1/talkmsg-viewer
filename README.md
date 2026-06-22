@@ -110,6 +110,3 @@ Open your browser at **http://localhost:5173**
 
 > Press the sync button from the app once it's running.
 
----
-> **⚠️ This project was generated with the assistance of an AI coding assistant (GitHub Copilot).**
----
