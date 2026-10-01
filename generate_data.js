@@ -117,8 +117,9 @@ function processMemberDir(rootPath, memberPath) {
       mType = 'image';
     }
 
-    // Extract and validate the timestamp segment (last underscore-delimited part)
-    let rawTs = baseName.split('_').pop();
+    // Extract the timestamp segment (13/14 digits). Supports both naming schemes:
+    //   32203_0_20240620100856.txt  and  32203_0_20240620100856_一ノ瀬 美空.txt
+    let rawTs = (baseName.match(/_(\d{13,14})(?=_|$)/) || [])[1] || baseName.split('_').pop();
     if (rawTs.length === 13 && /^\d+$/.test(rawTs)) {
       rawTs = rawTs.slice(0, 8) + '0' + rawTs.slice(8); // zero-pad single-digit hour
     }
